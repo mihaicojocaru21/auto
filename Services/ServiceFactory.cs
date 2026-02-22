@@ -1,10 +1,12 @@
 using Auto.Interfaces;
+using Auto.Repositories;
 
 namespace Auto.Services
 {
     public static class ServiceFactory
     {
         private static ICarService? _carService;
+        private static ICarRepository? _carRepository;
         private static readonly object _lock = new object();
         
         public static ICarService GetCarService()
@@ -15,7 +17,8 @@ namespace Auto.Services
                 {
                     if (_carService == null)
                     {
-                        _carService = new CarService();
+                        _carRepository ??= new InMemoryCarRepository();
+                        _carService = new CarService(_carRepository);
                     }
                 }
             }
@@ -25,6 +28,7 @@ namespace Auto.Services
         public static void ResetServices()
         {
             _carService = null;
+            _carRepository = null;
         }
     }
 }
