@@ -1,20 +1,23 @@
+using Auto.Interfaces;
 using Auto.Models;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Auto.Services
 {
-    public static class SaleService
+    public class SaleService
     {
-        private static List<Sell> sales = new List<Sell>();
-        private static int nextSaleId = 1;
-        
-        public static Sell MakeSale(int carId, decimal finalPrice, 
-            int? clientId = null, int? employeeId = null)
+        private readonly ISaleRepository _repository;
+
+        public SaleService(ISaleRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public Sell MakeSale(int carId, decimal finalPrice, int? clientId = null, int? employeeId = null)
         {
             var sale = new Sell
             {
-                Id = nextSaleId++,
                 CarId = carId,
                 ClientId = clientId,
                 EmployeeId = employeeId,
@@ -22,47 +25,17 @@ namespace Auto.Services
                 FinalPrice = finalPrice,
                 PaymentMethod = "Cash"
             };
-            
-            sales.Add(sale);
-            return sale;
+
+            return _repository.Add(sale);
         }
-        
-        public static List<Sell> GetAllSales()
-        {
-            return sales;
-        }
-        
-        public static List<Sell> GetSalesByPeriod(DateTime from, DateTime to)
-        {
-            return sales.Where(v => v.SaleDate >= from && v.SaleDate <= to).ToList();
-        }
-        
-        public static decimal GetTotalRevenue()
-        {
-            return sales.Sum(v => v.FinalPrice);
-        }
-        
-        public static string GetBestSellingModel()
-        {
-            if (!sales.Any()) return "No sales yet";
-            return "Analysis in progress...";
-        }
-        
-        public static bool DeleteSale(int id)
-        {
-            var sale = sales.FirstOrDefault(v => v.Id == id);
-            if (sale != null)
-            {
-                sales.Remove(sale);
-                return true;
-            }
-            return false;
-        }
-        
-        public static void ResetSales()
-        {
-            sales.Clear();
-            nextSaleId = 1;
-        }
+
+        public List<Sell> GetAllSales() => _repository.GetAll();
+
+        public List<Sell> GetSalesByPeriod(DateTime from, DateTime to)
+            => _repository.GetByPeriod(from, to);
+
+        public bool DeleteSale(int id) => _repository.Delete(id);
+
+        public void ResetSales() => _repository.Reset();
     }
 }

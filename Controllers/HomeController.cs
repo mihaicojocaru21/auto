@@ -7,16 +7,18 @@ namespace Auto.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ICarService _carService;
+        private readonly ICarQueryService _carQueryService;
+        private readonly ICarCommandService _carCommandService;
         
         public HomeController()
         {
-            _carService = ServiceFactory.GetCarService();
+            _carQueryService = ServiceFactory.GetCarQueryService();
+            _carCommandService = ServiceFactory.GetCarCommandService();
         }
         
         public IActionResult Index()
         {
-            var cars = _carService.GetAllCars();
+            var cars = _carQueryService.GetAllCars();
 
             ViewBag.TotalCars = cars.Count;
             ViewBag.SoldCars = cars.Count(m => m.Sold);
@@ -27,11 +29,11 @@ namespace Auto.Controllers
 
         public IActionResult Sell(int id)
         {
-            var success = _carService.SellCar(id);
+            var success = _carCommandService.SellCar(id);
             
             if (success)
             {
-                var car = _carService.GetAllCars().FirstOrDefault(m => m.Id == id);
+                var car = _carQueryService.GetAllCars().FirstOrDefault(m => m.Id == id);
                 TempData["Message"] = $"Car {car.GetInfo()} was sold!";
             }
             else
@@ -44,7 +46,7 @@ namespace Auto.Controllers
 
         public IActionResult Reset()
         {
-            _carService.Reset();
+            _carCommandService.Reset();
             TempData["Message"] = "Reset completed!";
             return RedirectToAction("Index");
         }

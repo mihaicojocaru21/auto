@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Auto.Services
 {
-    public class CarService : ICarService
+    public class CarService : ICarQueryService, ICarCommandService
     {
         private readonly List<Car> _cars;
 
