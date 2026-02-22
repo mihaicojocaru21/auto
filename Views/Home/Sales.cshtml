@@ -1,0 +1,39 @@
+@model List<Auto.Models.Sell>
+
+@{
+    ViewData["Title"] = "Sales";
+}
+
+<h1>Sales</h1>
+
+@if (!Model.Any())
+{
+    <p>No sales have been recorded.</p>
+}
+else
+{
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Sale ID</th>
+            <th>Car ID</th>
+            <th>Client ID</th>
+            <th>Employee ID</th>
+            <th>Sale Date</th>
+            <th>Final Price</th>
+            <th>Payment Method</th>
+        </tr>
+
+        @foreach (var sale in Model)
+        {
+            <tr>
+                <td>@sale.Id</td>
+                <td>@sale.CarId</td>
+                <td>@sale.ClientId</td>
+                <td>@sale.EmployeeId</td>
+                <td>@sale.SaleDate.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@sale.FinalPrice</td>
+                <td>@sale.PaymentMethod</td>
+            </tr>
+        }
+    </table>
+}
