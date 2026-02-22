@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Auto.Interfaces;
-using Auto.Services;
 using System.Linq;
 
 namespace Auto.Controllers
@@ -10,10 +9,10 @@ namespace Auto.Controllers
         private readonly ICarQueryService _carQueryService;
         private readonly ICarCommandService _carCommandService;
         
-        public HomeController()
+        public HomeController(ICarQueryService carQueryService, ICarCommandService carCommandService)
         {
-            _carQueryService = ServiceFactory.GetCarQueryService();
-            _carCommandService = ServiceFactory.GetCarCommandService();
+            _carQueryService = carQueryService;
+            _carCommandService = carCommandService;
         }
         
         public IActionResult Index()
